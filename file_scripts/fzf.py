@@ -42,4 +42,4 @@ def select_file_with_fzf(files):
     except subprocess.CalledProcessError as e:
         raise FZFError(error.NO_FILE_SELECTED_MESSAGE) from e
     else:
-        return Path(selected_file.stdout.decode(LOCALE).strip("\x00"))
+        return Path(output.stdout.decode(LOCALE).strip("\x00"))
