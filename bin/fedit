@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""
+Fuzzy-find a file and edit it.
+
+Dependencies
+============
+* fd
+* fzf
+"""
+
+import argparse
+import subprocess
+from sys import platform
+
+import file_scripts.fzf as fzf
+import file_scripts.editor as editor
+import file_scripts.search as search
+import file_scripts.error as error
+
+# ========== Constants ==========
+# ----- Paths -----
+BOOT_DIR = "/boot"
+ETC_DIR = "/etc"
+
+# ========== Functions ==========
+
+
+# ========== Main Script ==========
+if __name__ == "__main__":
+    # This script doesn't support Windows
+    if platform == "win32":
+        sys.exit(error.E_INTERRUPT)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-b",
+        "--boot",
+        action="store_const",
+        const=BOOT_DIR,
+        dest="dir",
+        help="edit a file in /boot",
+    )
+    parser.add_argument(
+        "-d", "--dir", dest="dir", type=str, help="edit a file in a given directory"
+    )
+    parser.add_argument(
+        "-E",
+        "--etc",
+        action="store_const",
+        const=ETC_DIR,
+        dest="dir",
+        help="edit a file in /etc",
+    )
+    parser.add_argument(
+        "-I",
+        "--no-ignore",
+        action="append_const",
+        const=search.EXTRA_FIND_OPTS["no_ignore"],
+        dest="extra_find_opts",
+        help="do not respect .(git|fd)ignore files",
+    )
+    parser.add_argument(
+        "-i",
+        "--no-ignore-vcs",
+        action="append_const",
+        const=search.EXTRA_FIND_OPTS["no_ignore_vcs"],
+        dest="extra_find_opts",
+        help="do not respect .gitignore files",
+    )
+    parser.add_argument("-e", "--editor", help="use a given editor")
+    parser.add_argument(
+        "patterns", type=str, nargs="*", help="patterns to pass to locate"
+    )
+
+    args = parser.parse_args()
+
+    user_opts = [] if args.extra_find_opts is None else args.extra_find_opts
+    user_opts.extend(search.DEFAULT_FIND_OPTS)
+
+    selected_editor = None
+
+    try:
+        selected_editor = editor.select_editor(args.editor)
+    except FileNotFoundError as e:
+        print(e)
+        exit(error.E_NOEDITORFOUND)
+
+    # If patterns were passed, use locate
+    # Otherwise check for -d and use fd
+    files = (
+        search.find_files(opts=user_opts, directory=args.dir)
+        if not args.patterns
+        else search.locate_files(args.patterns)
+    )
+
+    try:
+        selected_file = fzf.select_file_with_fzf(files)
+    except KeyboardInterrupt:
+        exit(error.E_INTERRUPT)
+    except fzf.FZFError:
+        exit(error.E_NOFILESELECTED)
+
+    if selected_file != "":
+        cmd = editor.gen_editor_cmd(selected_editor, selected_file)
+        subprocess.run(cmd)
+    else:
+        exit(error.E_NOFILESELECTED)

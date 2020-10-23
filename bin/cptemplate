@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+"""
+cptemplate - copy a template file from a specified template directory
+
+Dependencies
+============
+* fd
+* fzf
+"""
+
+# Module Imports
+import argparse
+import shutil
+import subprocess
+
+import file_scripts.fzf as fzf
+import file_scripts.editor as editor
+import file_scripts.search as search
+import file_scripts.error as error
+
+from pathlib import Path
+from sys import platform
+
+
+# ========== Constants ==========
+# ----- Paths -----
+DEFAULT_TEMPLATE_DIR = Path.home() / "Templates"
+
+# ========== Functions==========
+# ========== Main Script ==========
+if __name__ == "__main__":
+    if platform == "win32":
+        sys.exit(error.E_INTERRUPT)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-d",
+        "--template-dir",
+        dest="dir",
+        type=str,
+        default=DEFAULT_TEMPLATerror.E_DIR,
+        help="choose a template directory (default: ~/Templates)",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        dest="force_overwrite",
+        action="store_true",
+        help="overwrite dest if it exists",
+    )
+    parser.add_argument("dest", type=str)
+
+    args = parser.parse_args()
+
+    files = search.find_files(directory=args.dir)
+
+    try:
+        selected_file = fzf.select_file_with_fzf(files)
+    except KeyboardInterrupt:
+        exit(error.E_INTERRUPT)
+
+    dest_file = Path(args.dest)
+
+    try:
+        dest_file.touch(mode=0o600, exist_ok=False)
+    except FileExistsError:
+        raise NotImplementedError("Implement if file already exists")
+    else:
+        dest_file.write_bytes(selected_file.read_bytes())
+    # force_overwrite true: overwrite
+    # force_overwrite false: print error message
