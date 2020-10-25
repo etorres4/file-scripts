@@ -78,9 +78,12 @@ if __name__ == "__main__":
 
     try:
         dest_file.touch(mode=0o600, exist_ok=False)
-    except FileExistsError:
-    # force_overwrite true: overwrite
-    # force_overwrite false: print error message
-        raise NotImplementedError("Implement if file already exists")
+    except FileExistsError as e:
+        if args.force_overwrite:
+            dest_file.touch(mode=0o600, exist_ok=True)
+            dest_file.write_bytes(selected_file.read_bytes())
+        else:
+            print(e)
+            exit(error.E_FILE_EXISTS)
     else:
         dest_file.write_bytes(selected_file.read_bytes())
