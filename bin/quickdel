@@ -164,6 +164,8 @@ if __name__ == "__main__":
         os.remove(f)
 
     # Check -f, --force-directory-delete option
+    # shutil.rmtree forcibly removes directories
+    # os.rmdir removes directories only if they are empty
     rmdir_func = shutil.rmtree if args.force_directory_delete else os.rmdir
 
     for d in filter(os.path.isdir, files):
