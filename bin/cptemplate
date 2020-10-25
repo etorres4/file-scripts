@@ -26,6 +26,12 @@ from sys import platform
 # ----- Paths -----
 DEFAULT_TEMPLATE_DIR = Path.home() / "Templates"
 
+# ----- Error Messages -----
+TEMPLATE_DIR_DOESNT_EXIST = "Warning: template dir does not exist, exiting."
+
+# ----- Exit Codes -----
+E_TEMP_DIR_NON_EXIST = 1
+
 # ========== Functions==========
 # ========== Main Script ==========
 if __name__ == "__main__":
@@ -38,7 +44,6 @@ if __name__ == "__main__":
         "--template-dir",
         dest="dir",
         type=str,
-        default=DEFAULT_TEMPLATerror.E_DIR,
         help="choose a template directory (default: ~/Templates)",
     )
     parser.add_argument(
@@ -52,11 +57,21 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    files = search.find_files(directory=args.dir)
+    template_dir = DEFAULT_TEMPLATE_DIR if args.dir is None else Path(args.dir)
+
+    # Check if default template directory is non-existent
+    if not template_dir.exists():
+        print(TEMPLATE_DIR_DOESNT_EXIST)
+        exit(E_TEMP_DIR_NON_EXIST)
+
+    files = search.find_files(directory=template_dir)
 
     try:
         selected_file = fzf.select_file_with_fzf(files)
     except KeyboardInterrupt:
+        exit(error.E_INTERRUPT)
+    except fzf.FZFError as f:
+        print(f)
         exit(error.E_INTERRUPT)
 
     dest_file = Path(args.dest)
@@ -64,8 +79,8 @@ if __name__ == "__main__":
     try:
         dest_file.touch(mode=0o600, exist_ok=False)
     except FileExistsError:
+    # force_overwrite true: overwrite
+    # force_overwrite false: print error message
         raise NotImplementedError("Implement if file already exists")
     else:
         dest_file.write_bytes(selected_file.read_bytes())
-    # force_overwrite true: overwrite
-    # force_overwrite false: print error message
