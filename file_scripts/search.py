@@ -55,9 +55,25 @@ def find_files(
     cmd = [bin_override if bin_override is not None else FIND_CMD, *opts]
 
     cmd.append("--")
-    if pattern is not None:
-        cmd.append(pattern)
-    cmd.append(directory if directory is not None else ".")
+
+    """ Options Matrix
+      pattern    T T F F
+      directory  T F T F
+                 1 2 3 4
+
+      1. Pattern and directory were given: pass both
+      2. Only pattern was given: pass pattern and give . as directory
+      3. Only directory was given: pass . as pattern and give directory
+      4. Neither pattern nor directory were given: do nothing
+    """
+    if pattern is not None and directory is not None:
+        cmd.extend([pattern, directory])
+    elif pattern is not None and directory is None:
+        cmd.extend([pattern, "."])
+    elif pattern is None and directory is not None:
+        cmd.extend([".", directory])
+    elif pattern is None and directory is None:
+        pass
 
     return subprocess.run(cmd, capture_output=True, text=capture_text).stdout
 
