@@ -90,7 +90,7 @@ def locate_files(patterns, bin_override=None, capture_text=None):
     :returns: path of user-selected file
     :rtype: bytes, str if capture_text was initialized from None
     """
-    cmd = [bin_override if bin_override is not None else LOCATE_CMD, *LOCATE_OPTS]
+    cmd = [bin_override if bin_override is not None else LOCATE_CMD, *LOCATE_OPTS, "--"]
     cmd.extend(patterns)
 
     return subprocess.run(cmd, capture_output=True, text=capture_text).stdout

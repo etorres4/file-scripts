@@ -37,8 +37,10 @@ class TestFindFiles(unittest.TestCase):
     def test_bin_override(self, test_override, test_opts):
         search.find_files(opts=test_opts, bin_override=test_override)
         self.mocked_run.assert_called_with(
-            [test_override, *test_opts], capture_output=True, text=None
+            [test_override, *test_opts, "--"], capture_output=True, text=None
         )
+
+        # bin, opts, pattern, directory
 
     @given(text())
     def test_directory_override(self, d):
@@ -53,9 +55,9 @@ class TestFindFiles(unittest.TestCase):
         )
 
     def test_default_directory(self):
-        test_override = "fd_bin"
-        test_opts = ["option1"]
-        expected_cmd = [test_override, *test_opts]
+        test_override = "path/to/find"
+        test_opts = ["option1", "option2"]
+        expected_cmd = [test_override, *test_opts, "--"]
         search.find_files(opts=test_opts, bin_override=test_override)
         self.mocked_run.assert_called_with(expected_cmd, capture_output=True, text=None)
 
@@ -69,19 +71,18 @@ class TestFindFiles(unittest.TestCase):
 
 class LocateFiles(unittest.TestCase):
     def setUp(self):
-        self.patched_locate_opts = patch(f"{TESTING_MODULE}")
+        #self.patched_locate_opts = patch(f"{TESTING_MODULE}")
         self.patched_subprocess = patch(f"{TESTING_MODULE}.subprocess.run")
 
-        self.mocked_locate_opts = self.patched_subprocess.start()
         self.mocked_run = self.patched_subprocess.start()
 
-        self.mocked_locate_opts.LOCATE_OPTS = ["opt1", "opt2"]
+        search.LOCATE_OPTS =  ["opt1", "opt2"]
 
-    @given(p=lists(text()), b=text())
-    def test_bin_override(self, p, b):
-        search.locate_files(p, bin_override=b)
+    @given(test_patterns=lists(text()), bin=text())
+    def test_bin_override(self, test_patterns, bin):
+        search.locate_files(test_patterns, bin_override=bin)
         self.mocked_run.assert_called_with(
-            [b, *self.mocked_locate_opts, *p],
+            [bin, *search.LOCATE_OPTS, "--", *test_patterns],
             capture_output=True,
             text=None,
         )
