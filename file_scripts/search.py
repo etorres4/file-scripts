@@ -52,6 +52,9 @@ def find_files(
     :returns: path of user-selected file
     :rtype: bytes, str if capture_text was initialized from None
     """
+
+    # Sample of a command that gets passed to subprocess:
+    # ['/usr/bin/find', '--hidden', '--', '<pattern>', 'path/to/directory']
     cmd = [bin_override if bin_override is not None else FIND_CMD, *opts]
 
     cmd.append("--")
