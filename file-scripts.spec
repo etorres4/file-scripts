@@ -18,18 +18,20 @@
 
 Name:           file-scripts
 Version:        0.9.1
-Release:        0
+Release:        1
 Summary:        Eric's helper scripts
 License:        GPL-3.0-only
 Group:          Productivity/File utilities
 Source:         %{name}-%{version}.tar.gz
-BuildRequires:  python3
+BuildRequires:  python3 >= 3.7
+#BuildRequires:  python3-hypothesis
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-Sphinx
-Requires:       %{_bindir}/python3
+#BuildRequires:  python3-pytest
+Requires:       python3 >= 3.7
 Requires:       fd
-Recommends:     fzf
-Supplements:    bash
+Requires:       fzf
+Requires:       python3-termcolor
 Supplements:    zsh
 BuildArch:      noarch
 
@@ -60,7 +62,9 @@ mkdir -p "${ZSHCOMPLETIONDIR}"
 for completion in zsh/*; do
     install -Dm644 "${completion}" "${ZSHCOMPLETIONDIR}/${completion##*.}"
 done
-%check
+
+#%%check
+#pytest
 
 # %files %%{python_files} (bug)
 %files
