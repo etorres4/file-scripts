@@ -22,20 +22,9 @@ package() {
     python setup.py build
     python setup.py --root="$pkgdir" install
 
-    ## Install /etc/config files
-    #install -dm755 "${pkgdir}/etc/helper-scripts"
-    #for config in config/*; do
-    #    install -m644 "${config}" "${pkgdir}/etc/helper-scripts/${config##*/}"
-    #done
-
     ## Install zsh completions
-    #for completion in zsh/completions/*; do
+    #for completion in zsh; do
     #    install -m644 "${completion}" "${pkgdir}/usr/share/zsh/site-functions/${plugin##*.}"
-    #done
-
-    ## Install zsh plugins
-    #for plugin in zsh/plugins/*; do
-    #    install -m644 "${plugin}" "${pkgdir}/usr/share/zsh/plugins/helper-scripts/${plugin##*/}"
     #done
 }
 
