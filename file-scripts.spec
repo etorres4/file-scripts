@@ -23,8 +23,11 @@ Summary:        Eric's helper scripts
 License:        GPL-3.0-only
 Group:          Productivity/File utilities
 Source:         %{name}-%{version}.tar.gz
+BuildRequires:  python3
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-Sphinx
 Requires:       %{_bindir}/python3
-Requires::      fd
+Requires:       fd
 Recommends:     fzf
 Supplements:    bash
 Supplements:    zsh
@@ -45,28 +48,26 @@ Plugins and completions for helper scripts.
 %setup -q
 
 %build
+%{python3_build}
 
 %install
-%{python_install}
-
-# Install zsh plugins
-ZSHPLUGINDIR='%{buildroot}%{_datadir}/zsh/plugins/helper-scripts'
-mkdir -p "${ZSHPLUGINDIR}"
-cp zsh/plugins/* "${ZSHPLUGINDIR}"
+%{python3_install}
 
 # Install zsh completion functions
 ZSHCOMPLETIONDIR="%{buildroot}%{_datadir}/zsh/site-functions"
 mkdir -p "${ZSHCOMPLETIONDIR}"
 
-cp zsh/completions/* "${ZSHCOMPLETIONDIR}"
-
+for completion in zsh/*; do
+    install -Dm644 "${completion}" "${ZSHCOMPLETIONDIR}/${completion##*.}"
+done
 %check
 
+# %files %%{python_files} (bug)
 %files
 %attr(0755,-,-) %{_bindir}/*
+/usr/lib/python3*/*
 
 %files zsh-plugins
-%{_datadir}/zsh/plugins/helper-scripts/*
 %{_datadir}/zsh/site-functions/*
 
 %changelog
