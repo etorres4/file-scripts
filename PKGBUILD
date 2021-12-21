@@ -1,6 +1,6 @@
 # Maintainer: Eric Torres <erictorres4@protonmail.com>
 pkgname=file-scripts
-pkgver=0.9.0
+pkgver=0.9.1
 pkgrel=0
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
@@ -19,11 +19,8 @@ pkgver() {
 package() {
     cd "${srcdir}/${pkgname}"
 
-    install -dm755 "${pkgdir}"/usr/{bin,share/zsh/{plugins/helper-scripts,site-functions}}
-
-    for script in *.{py,sh}; do
-        install -m755 "${script}" "${pkgdir}/usr/bin/${script%.*}"
-    done
+    python setup.py build
+    python setup.py --root="$pkgdir" install
 
     ## Install /etc/config files
     #install -dm755 "${pkgdir}/etc/helper-scripts"
@@ -40,4 +37,8 @@ package() {
     #for plugin in zsh/plugins/*; do
     #    install -m644 "${plugin}" "${pkgdir}/usr/share/zsh/plugins/helper-scripts/${plugin##*/}"
     #done
+}
+
+check() {
+    pytest
 }

@@ -21,12 +21,12 @@ setuptools.setup(
     description="File-related helper scripts",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.com/pypa/sampleproject",
+    url="https://github.com/etorres4/file-scripts",
     packages=PACKAGES,
     scripts=SCRIPTS,
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU GPLv3 License",
         "Operating System :: OS Independent",
     ],
     command_options={

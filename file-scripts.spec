@@ -1,7 +1,7 @@
 #
 # spec file for package file-scripts
 #
-# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2021 SUSE LLC
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,7 +17,7 @@
 
 
 Name:           file-scripts
-Version:        0.9
+Version:        0.9.1
 Release:        0
 Summary:        Eric's helper scripts
 License:        GPL-3.0-only
@@ -47,12 +47,7 @@ Plugins and completions for helper scripts.
 %build
 
 %install
-# Install scripts in /usr/bin first
-SCRIPTDIR='%{buildroot}%{_bindir}'
-
-for script in *.{py,sh}; do
-    install -Dm755 "${script}" "${SCRIPTDIR}/${script%.*}"
-done
+%{python_install}
 
 # Install zsh plugins
 ZSHPLUGINDIR='%{buildroot}%{_datadir}/zsh/plugins/helper-scripts'
