@@ -71,12 +71,12 @@ class TestFindFiles(unittest.TestCase):
 
 class LocateFiles(unittest.TestCase):
     def setUp(self):
-        #self.patched_locate_opts = patch(f"{TESTING_MODULE}")
+        # self.patched_locate_opts = patch(f"{TESTING_MODULE}")
         self.patched_subprocess = patch(f"{TESTING_MODULE}.subprocess.run")
 
         self.mocked_run = self.patched_subprocess.start()
 
-        search.LOCATE_OPTS =  ["opt1", "opt2"]
+        search.LOCATE_OPTS = ["opt1", "opt2"]
 
     @given(test_patterns=lists(text()), bin=text())
     def test_bin_override(self, test_patterns, bin):
