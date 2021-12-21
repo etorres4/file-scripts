@@ -1,0 +1,7 @@
+Requirements
+------------
+
+* python >= 3.0
+* fd
+* fzf
+* python-termcolor

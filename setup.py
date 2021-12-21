@@ -9,7 +9,7 @@ SCRIPTS = ["bin/fedit", "bin/cptemplate", "bin/quickdel"]
 CMDCLASS = {"build_sphinx": BuildDoc}
 
 # ========== Functions ==========
-with open("README.rst", "r") as fh:
+with open("README", "r") as fh:
     long_description = fh.read()
 
 # ========== Package Setup ==========
