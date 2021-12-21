@@ -2,4 +2,5 @@
 .hypothesis
 build
 dist
+pkg
 **/*.egg-info
