@@ -24,10 +24,11 @@ License:        GPL-3.0-only
 Group:          Productivity/File utilities
 Source:         %{name}-%{version}.tar.gz
 BuildRequires:  python3 >= 3.7
-#BuildRequires:  python3-hypothesis
+BuildRequires:  python3-hypothesis
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-Sphinx
-#BuildRequires:  python3-pytest
+BuildRequires:  python3-pytest
+BuildRequires:  fdupes
 Requires:       python3 >= 3.7
 Requires:       fd
 Requires:       fzf
@@ -63,8 +64,10 @@ for completion in zsh/*; do
     install -Dm644 "${completion}" "${ZSHCOMPLETIONDIR}/${completion##*.}"
 done
 
-#%%check
-#pytest
+%fdupes %{buildroot}/%{_prefix}
+
+%check
+pytest
 
 # %files %%{python_files} (bug)
 %files
