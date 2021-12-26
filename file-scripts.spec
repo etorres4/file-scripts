@@ -17,8 +17,8 @@
 
 
 Name:           file-scripts
-Version:        0.9.1
-Release:        1
+Version:        0.9.2
+Release:        0
 Summary:        Eric's helper scripts
 License:        GPL-3.0-only
 Group:          Productivity/File utilities

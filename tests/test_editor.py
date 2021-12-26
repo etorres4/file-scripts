@@ -22,9 +22,6 @@ import file_scripts.editor as editor
 
 
 class TestSelectEditor(unittest.TestCase):
-    def test_returns_path_object(self):
-        self.assertIsInstance(editor.select_editor(), str)
-
     def test_override(self):
         override = "doesnotexist"
         with self.assertRaises(FileNotFoundError):
