@@ -69,7 +69,7 @@ done
 %check
 pytest
 
-# %files %%{python_files} (bug)
+#%%files %%{python_files} (bug)
 %files
 %attr(0755,-,-) %{_bindir}/*
 /usr/lib/python3*/*
