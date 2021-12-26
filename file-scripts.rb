@@ -4,7 +4,7 @@ class HelperScripts < Formula
   url "https://github.com/etorres4/file-scripts",
     :using => :git
   sha256 "7b6c3f363e3b34787765b5975d87f861a19eeda278612cbf8c5176e3e2732cd9"
-  version "0.9"
+  version "0.9.2"
 
   # No build dependencies
   bottle :unneeded
