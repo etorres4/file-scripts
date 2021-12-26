@@ -32,6 +32,7 @@ BuildRequires:  fdupes
 Requires:       python3 >= 3.7
 Requires:       fd
 Requires:       fzf
+Requires:       mlocate
 Requires:       python3-termcolor
 Supplements:    zsh
 BuildArch:      noarch

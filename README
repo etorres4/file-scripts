@@ -7,5 +7,6 @@ Requirements
 ------------
 * fd
 * fzf
+* mlocate
 * python >= 3.7
 * python-termcolor
