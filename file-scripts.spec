@@ -75,6 +75,7 @@ pytest
 /usr/lib/python3*/*
 
 %files zsh-plugins
-%{_datadir}/zsh/site-functions/*
+%{_datadir}/zsh/
+%{_datadir}/zsh/site-functions
 
 %changelog
