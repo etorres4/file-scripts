@@ -19,9 +19,10 @@
 Name:           file-scripts
 Version:        0.9.2
 Release:        0
-Summary:        Eric's helper scripts
+Summary:        Set of scripts for manipulating files
 License:        GPL-3.0-only
 Group:          Productivity/File utilities
+URL:            https://github.com/etorres4/file-scripts
 Source:         %{name}-%{version}.tar.gz
 BuildRequires:  python3 >= 3.7
 BuildRequires:  python3-hypothesis
