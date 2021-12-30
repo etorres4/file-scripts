@@ -25,3 +25,21 @@ class TestRunFZF(unittest.TestCase):
 
     def tearDown(self):
         patch.stopall()
+
+
+class TestFZFErrors(unittest.TestCase):
+    def setUp(self):
+        self.patched_subprocess = patch(f"{TESTING_MODULE}.subprocess.run")
+
+        self.mocked_run = self.patched_subprocess.start()
+
+    def test_raises_error(self):
+        self.mocked_run.return_value.check_returncode.side_effect = (
+            subprocess.CalledProcessError(1, "hi")
+        )
+
+        with self.assertRaises(fzf.FZFError):
+            fzf.select_file_with_fzf(b"test")
+
+    def tearDown(self):
+        patch.stopall()

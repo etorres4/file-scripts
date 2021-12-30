@@ -97,8 +97,9 @@ if __name__ == "__main__":
         selected_file = fzf.select_file_with_fzf(files)
     except KeyboardInterrupt:
         exit(error.E_INTERRUPT)
-    except fzf.FZFError:
-        exit(error.E_NOFILESELECTED)
+    except fzf.FZFError as e:
+        print(e)
+        exit(e.exit_code)
 
     if selected_file != "":
         cmd = editor.gen_editor_cmd(selected_editor, selected_file)

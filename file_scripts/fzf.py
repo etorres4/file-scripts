@@ -22,7 +22,28 @@ LOCALE = "utf-8"
 
 
 class FZFError(Exception):
-    pass
+    """Custom error class for any errors that occur when fzf is run.
+
+    **Attributes**
+
+    * exit_code: exit code when fzf exited
+    * message: stderr of fzf's process when the error occured
+
+    """
+
+    def __init__(self, exit_code, message):
+        """
+        :type exit_code: int
+        :type message: str
+        """
+        self.exit_code = exit_code
+        self.message = message
+
+    def __repr__(self):
+        return f"FZFError({self.exit_code}, {self.message})"
+
+    def __str__(self):
+        return self.message
 
 
 # ========== Functions ==========
@@ -40,6 +61,6 @@ def select_file_with_fzf(files):
     try:
         output.check_returncode()
     except subprocess.CalledProcessError as e:
-        raise FZFError(error.NO_FILE_SELECTED_MESSAGE) from e
+        raise FZFError(e.returncode, e.stderr) from e
     else:
         return Path(output.stdout.decode(LOCALE).strip("\x00"))
