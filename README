@@ -10,3 +10,10 @@ Requirements
 * mlocate
 * python >= 3.7
 * python-termcolor
+
+Build Requirements
+------------------
+* python >= 3.7
+* pytest
+* python-hypothesis
+* python-sphinx
