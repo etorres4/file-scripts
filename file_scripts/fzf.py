@@ -31,19 +31,17 @@ class FZFError(Exception):
 
     """
 
-    def __init__(self, exit_code, message):
+    def __init__(self, exit_code):
         """
         :type exit_code: int
-        :type message: str
         """
         self.exit_code = exit_code
-        self.message = message
 
     def __repr__(self):
-        return f"FZFError({self.exit_code}, {self.message})"
+        return f"FZFError({self.exit_code})"
 
     def __str__(self):
-        return self.message
+        return str(__repr__)
 
 
 # ========== Functions ==========
@@ -61,6 +59,6 @@ def select_file_with_fzf(files):
     try:
         output.check_returncode()
     except subprocess.CalledProcessError as e:
-        raise FZFError(e.returncode, e.stderr) from e
+        raise FZFError(e.returncode) from e
     else:
         return Path(output.stdout.decode(LOCALE).strip("\x00"))
