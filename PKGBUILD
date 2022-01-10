@@ -1,6 +1,6 @@
 # Maintainer: Eric Torres <erictorres4@protonmail.com>
 pkgname=file-scripts
-pkgver=0.9.2
+pkgver=1.0
 pkgrel=0
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
@@ -8,8 +8,8 @@ license=(GPL3)
 depends=(fd fzf mlocate 'python>=3.7' python-termcolor)
 makedepends=(python-hypothesis python-pytest python-setuptools python-sphinx)
 source=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=('85ee18f00451c5bcaae18f23600afbbd621514c8fe0b8250c8191698c396c992')
-sha512sums=('f5fd0244fef5800f3ae8b34633b412b451cb014eab3206f9f003c1e12d13b034f59c45646a519a9bb2f9342b406714831cdf87cf5656ff2c3605ed4f0fc57ff2')
+sha256sums=('e085eb0382f9025ea5d03abeb39148da7a97f40255a6beda79c7a066f8fc0696')
+sha512sums=('82932d56c5fd828d4eaaaf6e3d59ac528c38efd23b3e5acdf9391a47bf53b357b492f751598bc23e5e1e503579e9b00704208277eff49dd7c524e7e2405633d9')
 
 package() {
     cd "${srcdir}/${pkgname}-${pkgver}"
