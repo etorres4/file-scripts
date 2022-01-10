@@ -8,8 +8,8 @@ license=(GPL3)
 depends=(fd fzf mlocate 'python>=3.7' python-termcolor)
 makedepends=(python-hypothesis python-pytest python-setuptools python-sphinx)
 source=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=('e085eb0382f9025ea5d03abeb39148da7a97f40255a6beda79c7a066f8fc0696')
-sha512sums=('82932d56c5fd828d4eaaaf6e3d59ac528c38efd23b3e5acdf9391a47bf53b357b492f751598bc23e5e1e503579e9b00704208277eff49dd7c524e7e2405633d9')
+sha256sums=('89ef58e7b7ff62914570e8747cf9a56d695e7da3e8d27655a6431c64b31d3eb6')
+sha512sums=('f7eb56056f9de047b6a4e0531a44863e34e1beb3e620daf219807badefaed186036bc8d06dd102335915fe44ff06e1c132d159f38692043cf96d49649c4371b4')
 
 package() {
     cd "${srcdir}/${pkgname}-${pkgver}"
