@@ -4,7 +4,7 @@ class FileScripts < Formula
   url "https://github.com/etorres4/file-scripts",
     :using => :git
   version "1.0"
-  sha256 "89ef58e7b7ff62914570e8747cf9a56d695e7da3e8d27655a6431c64b31d3eb6"
+  sha256 "1124f0fabb45341a0daf6ca1f6fc9f7aa13bc921bd2fe25bd6e9744829c7fc96"
 
   depends_on "python@3.10"
   depends_on "fd"
