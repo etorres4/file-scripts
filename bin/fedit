@@ -98,7 +98,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         exit()
     except fzf.FZFError as e:
-        print(e)
         exit(e.exit_code)
 
     if selected_file != "":
