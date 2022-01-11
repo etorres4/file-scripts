@@ -10,11 +10,8 @@ Dependencies
 
 # Module Imports
 import argparse
-import shutil
-import subprocess
 
 import file_scripts.fzf as fzf
-import file_scripts.editor as editor
 import file_scripts.search as search
 import file_scripts.error as error
 
@@ -36,7 +33,7 @@ E_TEMP_DIR_NON_EXIST = 1
 # ========== Main Script ==========
 if __name__ == "__main__":
     if platform == "win32":
-        sys.exit(error.E_INTERRUPT)
+        exit(error.E_INTERRUPT)
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

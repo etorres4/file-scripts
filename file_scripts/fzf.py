@@ -7,7 +7,6 @@
 import shutil
 import subprocess
 
-import file_scripts.error as error
 
 from pathlib import Path
 
@@ -41,7 +40,7 @@ class FZFError(Exception):
         return f"FZFError({self.exit_code})"
 
     def __str__(self):
-        return str(__repr__)
+        return str(self.__repr__())
 
 
 # ========== Functions ==========

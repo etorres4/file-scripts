@@ -29,7 +29,7 @@ ETC_DIR = "/etc"
 if __name__ == "__main__":
     # This script doesn't support Windows
     if platform == "win32":
-        sys.exit(error.E_INTERRUPT)
+        exit(error.E_INTERRUPT)
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

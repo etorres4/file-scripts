@@ -141,7 +141,7 @@ if __name__ == "__main__":
     files = sorted(files)
 
     if files == []:
-        print(f"No results found, exiting")
+        print("No results found, exiting")
         exit(error.E_NO_RESULTS)
 
     # Pretty print all filenames
