@@ -30,6 +30,7 @@ elif platform == "darwin":
 
 # ========== Functions ==========
 def find_files(
+    *,
     opts=DEFAULT_FIND_OPTS,
     directory=None,
     capture_text=None,
@@ -81,7 +82,7 @@ def find_files(
     return subprocess.run(cmd, capture_output=True, text=capture_text).stdout
 
 
-def locate_files(patterns, bin_override=None, capture_text=None):
+def locate_files(patterns, *, bin_override=None, capture_text=None):
     """Use a locate-based program to locate files, then pass to fzf.
 
     :param patterns: patterns to pass to locate
