@@ -43,3 +43,10 @@ class TestFZFErrors(unittest.TestCase):
 
     def tearDown(self):
         patch.stopall()
+
+
+class TestFZFErrorClass(unittest.TestCase):
+    def test_class_repr(self):
+        f = fzf.FZFError(1)
+        f
+        str(f)
