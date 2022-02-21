@@ -3,7 +3,6 @@
 
 Tests for the rbackup.config module.
 """
-import subprocess
 import unittest
 from unittest.mock import patch
 

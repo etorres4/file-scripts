@@ -4,7 +4,6 @@
 Tests for the rbackup.config module.
 """
 import unittest
-from unittest.mock import patch
 
 import file_scripts.editor as editor
 
@@ -17,7 +16,7 @@ import file_scripts.editor as editor
     -----------
     * Returned object is an instance of str
     * If override is not None, ensure that it is in the result
-    
+
 """
 
 
