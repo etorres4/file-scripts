@@ -151,7 +151,7 @@ if __name__ == "__main__":
     print()
 
     try:
-        user_response = input("Would you like to delete these files? ")
+        user_response = input("Would you like to delete these files? (y/N)")
     except KeyboardInterrupt:
         exit(error.E_INTERRUPT)
 
