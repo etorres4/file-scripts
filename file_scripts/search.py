@@ -19,7 +19,7 @@ _num_threads = len(sched_getaffinity(0))  # have fd run on multiple threads
 FIND_CMD = shutil.which("fd")
 DEFAULT_FIND_OPTS = [
     "--threads",
-    _num_threads,
+    str(_num_threads),
     "--hidden",
     "--print0",
     "--type",
