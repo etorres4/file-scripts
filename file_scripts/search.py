@@ -7,14 +7,26 @@
 import shutil
 import subprocess
 
+from os import sched_getaffinity
 from sys import platform
+
+_num_threads = len(sched_getaffinity(0))  # have fd run on multiple threads
 
 # ========== Constants ==========
 # ----- Commands -----
 # Options: show hidden files, null terminator, files only
 # Optional arguments: show vcs files, show every file
 FIND_CMD = shutil.which("fd")
-DEFAULT_FIND_OPTS = ["--hidden", "--print0", "--type", "f", "--type", "l"]
+DEFAULT_FIND_OPTS = [
+    "--threads",
+    _num_threads,
+    "--hidden",
+    "--print0",
+    "--type",
+    "f",
+    "--type",
+    "l",
+]
 EXTRA_FIND_OPTS = {"no_ignore": "--no-ignore", "no_ignore_vcs": "--no-ignore-vcs"}
 
 # Options: null terminator, ignore case, print names matching all non-option arguments
