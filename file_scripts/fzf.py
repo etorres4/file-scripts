@@ -50,14 +50,14 @@ def select_file_with_fzf(files):
 
     :param files: stream of null-terminated files to read
     :type files: bytes stream (stdout of a completed process)
-    :returns: selected file
+    :returns: path of selected file
     :rtype: path-like object
     :raises: FZFError if there was an error with fzf or no file was selected
     """
-    output = subprocess.run([FZF_CMD, *FZF_OPTS], input=files, stdout=subprocess.PIPE)
-
     try:
-        output.check_returncode()
+        output = subprocess.run(
+            (FZF_CMD, *FZF_OPTS), input=files, capture_output=True, check=True
+        )
     except subprocess.CalledProcessError as e:
         raise FZFError(e.returncode, e.stderr) from e
     else:
