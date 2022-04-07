@@ -6,9 +6,9 @@ pkgdesc="Various scripts for performing file-related operations such as editing 
 arch=(any)
 license=(GPL3)
 depends=(fd fzf mlocate python python-termcolor)
-makedepends=(python-setuptools python-sphinx)
+makedepends=(git python-setuptools python-sphinx)
 checkdepends=(python-hypothesis python-pytest)
-source=("${pkgname}-${pkgver}.tar.gz")
+source=("${pkgname}-${pkgver}::git+file:///home/etorres/Projects/file-scripts")
 sha256sums=('SKIP')
 
 pkgver() {
