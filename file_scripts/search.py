@@ -7,10 +7,7 @@
 import shutil
 import subprocess
 
-from os import sched_getaffinity
 from sys import platform
-
-_num_threads = len(sched_getaffinity(0))  # have fd run on multiple threads
 
 # ========== Constants ==========
 # ----- Commands -----
@@ -18,8 +15,6 @@ _num_threads = len(sched_getaffinity(0))  # have fd run on multiple threads
 # Optional arguments: show vcs files, show every file
 FIND_CMD = shutil.which("fd")
 DEFAULT_FIND_OPTS = [
-    "--threads",
-    str(_num_threads),
     "--hidden",
     "--print0",
     "--type",
