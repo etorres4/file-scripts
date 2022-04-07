@@ -34,9 +34,7 @@ class TestFZFErrors(unittest.TestCase):
         self.mocked_run = self.patched_subprocess.start()
 
     def test_raises_error(self):
-        self.mocked_run.return_value.check_returncode.side_effect = (
-            subprocess.CalledProcessError(1, "hi")
-        )
+        self.mocked_run.side_effect = subprocess.CalledProcessError(1, "hi")
 
         with self.assertRaises(fzf.FZFError):
             fzf.select_file_with_fzf(b"test")
@@ -47,6 +45,6 @@ class TestFZFErrors(unittest.TestCase):
 
 class TestFZFErrorClass(unittest.TestCase):
     def test_class_repr(self):
-        f = fzf.FZFError(1)
+        f = fzf.FZFError(1, "error")
         f
         str(f)
