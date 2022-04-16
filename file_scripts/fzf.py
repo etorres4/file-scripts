@@ -55,8 +55,10 @@ def select_file_with_fzf(files):
     :raises: FZFError if there was an error with fzf or no file was selected
     """
     try:
+        # if we use capture_output, it captures file selection dialog
+        # use subprocess.PIPE instead to prevent this
         output = subprocess.run(
-            (FZF_CMD, *FZF_OPTS), input=files, capture_output=True, check=True
+            (FZF_CMD, *FZF_OPTS), input=files, stdout=subprocess.PIPE, check=True
         )
     except subprocess.CalledProcessError as e:
         raise FZFError(e.returncode, e.stderr) from e
