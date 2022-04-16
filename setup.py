@@ -15,7 +15,7 @@ with open("README", "r") as fh:
 # ========== Package Setup ==========
 setuptools.setup(
     name="file_scripts",
-    version="1.1.1",
+    version="1.1.2",
     author="Eric Torres",
     author_email="erictorres4@protonmail.com",
     description="File-related helper scripts",

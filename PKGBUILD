@@ -1,24 +1,24 @@
 # Maintainer: Eric Torres <erictorres4@protonmail.com>
 pkgname=file-scripts
-pkgver=1.1.1
-pkgrel=2
+pkgver=1.1.2
+pkgrel=1
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
 license=(GPL3)
 depends=(fd fzf mlocate python python-termcolor)
 makedepends=(git python-setuptools python-sphinx)
 checkdepends=(python-hypothesis python-pytest)
-source=("${pkgname}-${pkgver}::git+file:///home/etorres/Projects/file-scripts")
+source=("${pkgname}::git+file:///home/etorres/Projects/file-scripts")
 install=$pkgname.install
 sha256sums=('SKIP')
 
 pkgver() {
-    cd "${srcdir}/${pkgname}-${pkgver}"
+    cd "${srcdir}/${pkgname}"
     python setup.py --version
 }
 
 package() {
-    cd "${srcdir}/${pkgname}-${pkgver}"
+    cd "${srcdir}/${pkgname}"
 
     python setup.py build
     python setup.py install --root="$pkgdir/" --optimize=1
