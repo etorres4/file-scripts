@@ -1,0 +1,54 @@
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+post_install() {
+cat << EOF
+To bind a key to run fedit:
+
+Add the following lines to your shell config file:
+
+_run_fedit() {
+    fedit && zle reset-prompt
+}
+
+_run_etcedit() {
+    fedit --etc && zle reset-prompt
+}
+
+zle -N _run_fedit
+bindkey -M viins '^o' _run_fedit
+
+zle -N _run_etcedit
+bindkey -M viins '^e' _run_etcedit
+
+EOF
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#pre_upgrade() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+#post_upgrade() {
+	# do something here
+#}
+
+# arg 1:  the old package version
+pre_remove() {
+cat << EOF
+Remember to remove any lines invoking any of these scripts from your shell config files
+EOF
+}
+
+## arg 1:  the old package version
+#post_remove() {
+	# do something here
+#}
+#
+#
+
