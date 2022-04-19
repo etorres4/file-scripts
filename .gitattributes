@@ -1,6 +1,7 @@
 .gitignore export-ignore
 .gitattributes export-ignore
 file-scripts.changes export-ignore
+file-scripts.install export-ignore
 file-scripts.rb export-ignore
 file-scripts.spec export-ignore
 PKGBUILD export-ignore
