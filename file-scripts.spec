@@ -17,7 +17,7 @@
 
 
 Name:           file-scripts
-Version:        1.0
+Version:        1.1.3
 Release:        0
 Summary:        Set of scripts for manipulating files
 License:        GPL-3.0-only
