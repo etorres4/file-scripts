@@ -7,6 +7,7 @@
 import shutil
 import subprocess
 
+from multiprocessing import cpu_count
 from sys import platform
 
 # ========== Constants ==========
@@ -21,6 +22,8 @@ DEFAULT_FIND_OPTS = [
     "f",
     "--type",
     "l",
+    "--threads",
+    str(cpu_count()),
 ]
 EXTRA_FIND_OPTS = {"no_ignore": "--no-ignore", "no_ignore_vcs": "--no-ignore-vcs"}
 
