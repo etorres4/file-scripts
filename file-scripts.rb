@@ -2,8 +2,8 @@ class FileScripts < Formula
   desc "Various scripts for performing file-related operations"
   homepage "https://github.com/etorres4/file-scripts"
   url "https://github.com/etorres4/file-scripts", :using => :git
-  version "1.0.1"
-  sha256 "1124f0fabb45341a0daf6ca1f6fc9f7aa13bc921bd2fe25bd6e9744829c7fc96"
+  version "1.1.3"
+  sha256 "fad7da96c72c8bef81f3ec6a2d1cb13b09fb44e084f98b05ba3a7dfd8b41ae12"
 
   depends_on "fd"
   depends_on "fzf"

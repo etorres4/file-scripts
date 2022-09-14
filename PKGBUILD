@@ -1,6 +1,6 @@
 # Maintainer: Eric Torres <erictorres4@protonmail.com>
 pkgname=file-scripts
-pkgver=1.1.2
+pkgver=1.1.3
 pkgrel=1
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
