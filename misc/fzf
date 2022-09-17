@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-## FZF helpers
-
-FZF_OPTS=(--read0 --select-1 --exit-0 --print0)
-
-run_fzf() {
-    fzf "${FZF_OPTS[@]}" -- "$@"
-}
