@@ -5,8 +5,7 @@ set -e
 trap 'exit 1' SIGINT
 
 # Source library
-#LIBDIR="/usr/share/file-scripts/"
-LIBDIR="$HOME/Projects/file-scripts/misc/"
+LIBDIR="/usr/share/file-scripts/"
 
 for f in "$LIBDIR"/*.sh; do
     source "${f}"
