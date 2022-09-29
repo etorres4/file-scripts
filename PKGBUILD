@@ -5,7 +5,8 @@ pkgrel=1
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
 license=(GPL3)
-depends=(bash fd fzf mlocate python python-termcolor)
+#depends=(bash fd fzf mlocate python python-termcolor)
+depends=(bash fd fzf)
 makedepends=(git)
 #makedepends=(git python-setuptools python-sphinx)
 #checkdepends=(python-hypothesis python-pytest)
@@ -32,10 +33,10 @@ package() {
     #python setup.py build
     #python setup.py install --root="$pkgdir/" --optimize=1
 
-    ## Install zsh completions
-    #for completion in zsh; do
-    #    install -m644 "${completion}" "${pkgdir}/usr/share/zsh/site-functions/${plugin##*.}"
-    #done
+    # Install zsh completions
+    for completion in zsh; do
+        install -m644 "${completion}" "${pkgdir}/usr/share/zsh/site-functions/${plugin##*.}"
+    done
 }
 
 #check() {
