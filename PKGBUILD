@@ -22,11 +22,11 @@ package() {
     cd "${srcdir}/${pkgname}/bash"
 
     for script in bin/*; do
-        install -Dm755 "$script" "$pkgdir/usr/bin/${script%.*}"
+        install -Dm755 "$script" "$pkgdir/usr/bin/$(basename -s '.sh' "$script")"
     done
 
     for libfile in *.sh; do
-        install -Dm644 "$libfile" "$pkgdir/usr/share/file-scripts/$libfile"
+        install -Dm644 "$libfile" "$pkgdir/usr/share/file-scripts/${libfile##*/}"
     done
 
     #python setup.py build
