@@ -5,37 +5,33 @@ pkgrel=2
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
 license=(GPL3)
-#depends=(bash fd fzf mlocate python python-termcolor)
-depends=(bash fd fzf)
+depends=(bash fd fzf mlocate python python-termcolor)
 makedepends=(git)
-#makedepends=(git python-setuptools python-sphinx)
-#checkdepends=(python-hypothesis python-pytest)
+makedepends=(git python-setuptools python-sphinx)
+checkdepends=(python-hypothesis python-pytest)
 source=("${pkgname}::git+file:///home/etorres/Projects/file-scripts")
 install=$pkgname.install
 sha256sums=('SKIP')
 
 pkgver() {
     cd "${srcdir}/${pkgname}/bash"
-    bash version.sh
+    bash version.sh --print
 }
 
 package() {
-    cd "${srcdir}/${pkgname}/bash"
+    cd "${srcdir}/${pkgname}"
 
-    for script in bin/*; do
+    for script in bash/bin/*; do
         install -Dm755 "$script" "$pkgdir/usr/bin/$(basename -s '.sh' "$script")"
     done
 
-    for libfile in *.sh; do
-        install -Dm644 "$libfile" "$pkgdir/usr/share/file-scripts/${libfile##*/}"
+    for libfile in bash/*.sh; do
+        install -Dm644 "$libfile" "$pkgdir/usr/share/file-scripts/$(basename "$libfile")"
     done
 
-    #python setup.py build
-    #python setup.py install --root="$pkgdir/" --optimize=1
-
     # Install zsh completions
-    for completion in zsh; do
-        install -m644 "${completion}" "${pkgdir}/usr/share/zsh/site-functions/${plugin##*.}"
+    for completion in zsh/*; do
+        install -Dm644 "${completion}" "${pkgdir}/usr/share/zsh/site-functions/$(basename "$completion")"
     done
 }
 
