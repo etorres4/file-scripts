@@ -1,6 +1,7 @@
 # Utility functions and helpers for searching
 DEFAULT_FD_OPTS=('--hidden' '--type' 'f' '--type' 'l' '--threads' "$(nproc)")
 
+# Search and return a string with filenames delimited by \n
 # Parameters:
 # $1: directory
 # $2-n: extra arguments
