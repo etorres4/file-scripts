@@ -100,7 +100,7 @@ if ! [[ -d "$DIR" ]]; then
 fi
 
 files="$(find_files "$DIR")"
-selected_file="$(run_fzf "$files")"
+selected_file="$(fzf --select-1 --exit-0 <<< "$files")"
 
 # Check if target exists
 if [[ -f "$1" && -z "$FORCE_OVERWRITE" ]]; then
