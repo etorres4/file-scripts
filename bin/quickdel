@@ -4,14 +4,7 @@
 set -e
 trap 'exit 1' SIGINT
 
-# ========== Source library ==========
-LIBDIR="/usr/share/file-scripts/"
-
-for f in "$LIBDIR"/*.sh; do
-    source "${f}"
-done
-
-# ========== Constants ==========
+# Constants
 VERSION='2.0.0'
 RED=$'\e[1;31m'
 GREEN=$'\e[1;32m'
@@ -112,7 +105,7 @@ while true; do
                     exit 1
                     ;;
             esac
-            extra_fd_opts+=('--extension' "$EXT")
+            fd_opts+=('--extension' "$EXT")
             shift 2
             continue
             ;;
@@ -126,7 +119,7 @@ while true; do
                     exit 1
                     ;;
             esac
-            extra_fd_opts+=('--extension' "$EXT")
+            fd_opts+=('--extension' "$EXT")
             shift
             continue
             ;;
@@ -141,12 +134,12 @@ while true; do
             continue
             ;;
         '-i' | '--no-ignore-vcs')
-            extra_fd_opts+=('--no-ignore-vcs')
+            fd_opts+=('--no-ignore-vcs')
             shift
             continue
             ;;
         '-I' | '--no-ignore')
-            extra_fd_opts+=('--no-ignore')
+            fd_opts+=('--no-ignore')
             shift
             continue
             ;;
@@ -181,7 +174,7 @@ fi
 declare -a files pattern_results
 
 for pattern in "$@"; do
-    readarray -d $'\n' -t pattern_results <<< "$(fd "${DEFAULT_FD_OPTS[@]}" "${extra_fd_opts[@]}" "${typeopts[@]}" "$pattern")"
+    readarray -d $'\n' -t pattern_results <<< "$(fd "${fd_opts[@]}" "${typeopts[@]}" "$pattern")"
     files+=("${pattern_results[@]}")
 done
 

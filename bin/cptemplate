@@ -4,13 +4,6 @@
 set -e
 trap 'exit 1' SIGINT
 
-# Source library
-LIBDIR="/usr/share/file-scripts/"
-
-for f in "$LIBDIR"/*.sh; do
-	source "${f}"
-done
-
 # Constants
 VERSION=2.0.0
 DEFAULT_TEMPLATE_DIR="$HOME/Templates"
@@ -101,7 +94,7 @@ if ! [[ -d "$DIR" ]]; then
 	exit 2
 fi
 
-files="$(find_files "$DIR")"
+files="$("${fd_opts[@]}" "$DIR")"
 selected_file="$(fzf --select-1 --exit-0 <<< "$files")"
 
 # Check if target exists

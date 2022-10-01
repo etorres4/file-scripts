@@ -4,18 +4,12 @@
 set -e
 trap 'exit 1' SIGINT
 
-# Source library
-LIBDIR="/usr/share/file-scripts/"
-
-for f in "$LIBDIR"/*.sh; do
-	source "${f}"
-done
-
 # Constants
 VERSION=2.0.0
 
 BOOT_DIR='/boot'
 ETC_DIR='/etc'
+fd_opts=(--hidden --type file --type symlink --threads "$(nproc)")
 
 # Helper functions
 function help() {
@@ -75,12 +69,12 @@ while true; do
 		continue
 		;;
 	'-i' | '--no-ignore-vcs')
-		NO_IGNORE_VCS=1
+        fd_opts+=(--no-ignore-vcs)
 		shift
 		continue
 		;;
 	'-I' | '--no-ignore')
-		NO_IGNORE=1
+        fd_opts+=(--no-ignore)
 		shift
 		continue
 		;;
@@ -114,16 +108,7 @@ elif [[ -z $DIR ]]; then
 	DIR='.'
 fi
 
-# Handle extra options
-declare -a extra_opts
-
-if [[ -n $NO_IGNORE ]]; then
-	extra_opts+=('--no-ignore')
-elif [[ -n $NO_IGNORE_VCS ]]; then
-	extra_opts+=('--no-ignore-vcs')
-fi
-
-files="$(find_files $DIR "${extra_opts[@]}")"
+files="$(find_files $DIR "${fd_opts[@]}")"
 selected_file="$(fzf --select-1 --exit-0 <<< "$files")"
 
 if [[ -w "${selected_file}" ]]; then
