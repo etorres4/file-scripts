@@ -1,0 +1,86 @@
+#!/usr/bin/python3
+"""
+cptemplate - copy a template file from a specified template directory
+
+Dependencies
+============
+* fd
+* fzf
+"""
+
+# Module Imports
+import argparse
+
+import file_scripts.fzf as fzf
+import file_scripts.search as search
+import file_scripts.error as error
+
+from pathlib import Path
+from sys import platform
+
+
+# ========== Constants ==========
+# ----- Paths -----
+DEFAULT_TEMPLATE_DIR = Path.home() / "Templates"
+
+# ----- Error Messages -----
+TEMPLATE_DIR_DOESNT_EXIST = "Warning: template dir does not exist, exiting."
+
+# ----- Exit Codes -----
+E_TEMP_DIR_NON_EXIST = 1
+
+# ========== Functions==========
+# ========== Main Script ==========
+if __name__ == "__main__":
+    if platform == "win32":
+        exit(error.E_INTERRUPT)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-d",
+        "--template-dir",
+        dest="dir",
+        type=str,
+        help="choose a template directory (default: ~/Templates)",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        dest="force_overwrite",
+        action="store_true",
+        help="overwrite dest if it exists",
+    )
+    parser.add_argument("dest", type=str)
+
+    args = parser.parse_args()
+
+    template_dir = DEFAULT_TEMPLATE_DIR if args.dir is None else Path(args.dir)
+
+    # Check if default template directory is non-existent
+    if not template_dir.exists():
+        print(TEMPLATE_DIR_DOESNT_EXIST)
+        exit(E_TEMP_DIR_NON_EXIST)
+
+    files = search.find_files(directory=template_dir)
+
+    try:
+        selected_file = fzf.select_file_with_fzf(files)
+    except KeyboardInterrupt:
+        exit(error.E_INTERRUPT)
+    except fzf.FZFError as f:
+        print(f)
+        exit(f.exit_code)
+
+    dest_file = Path(args.dest)
+
+    try:
+        dest_file.touch(mode=0o600, exist_ok=False)
+    except FileExistsError as e:
+        if args.force_overwrite:
+            dest_file.touch(mode=0o600, exist_ok=True)
+            dest_file.write_bytes(selected_file.read_bytes())
+        else:
+            print(e)
+            exit(error.E_FILE_EXISTS)
+    else:
+        dest_file.write_bytes(selected_file.read_bytes())

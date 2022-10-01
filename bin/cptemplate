@@ -1,86 +1,113 @@
-#!/usr/bin/python3
-"""
-cptemplate - copy a template file from a specified template directory
+#!/usr/bin/env bash
 
-Dependencies
-============
-* fd
-* fzf
-"""
+# Cleanup
+set -e
+trap 'exit 1' SIGINT
 
-# Module Imports
-import argparse
+# Source library
+LIBDIR="/usr/share/file-scripts/"
 
-import file_scripts.fzf as fzf
-import file_scripts.search as search
-import file_scripts.error as error
+for f in "$LIBDIR"/*.sh; do
+	source "${f}"
+done
 
-from pathlib import Path
-from sys import platform
+DEFAULT_TEMPLATE_DIR="$HOME/Templates"
 
+# Helper functions
+function help() {
+	cat <<HELPMESSAGE
+$(basename "$0") $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION
 
-# ========== Constants ==========
-# ----- Paths -----
-DEFAULT_TEMPLATE_DIR = Path.home() / "Templates"
+Usage: $(basename "$0") [-h] [-d DIR] [-f] dest
 
-# ----- Error Messages -----
-TEMPLATE_DIR_DOESNT_EXIST = "Warning: template dir does not exist, exiting."
+Positional arguments:
+  dest
 
-# ----- Exit Codes -----
-E_TEMP_DIR_NON_EXIST = 1
+options:
+  -h, --help            show this help message and exit
+  -d DIR, --template-dir DIR
+                        choose a template directory (default: ~/Templates)
+  -f, --force           overwrite dest if it exists
+HELPMESSAGE
+}
 
-# ========== Functions==========
-# ========== Main Script ==========
-if __name__ == "__main__":
-    if platform == "win32":
-        exit(error.E_INTERRUPT)
+while true; do
+	case "${1}" in
+	'-d' | '--dir')
+		DIR="${2}"
+		case "${DIR}" in
+		"")
+			exit 1
+			;;
+		-*)
+			exit 1
+			;;
+		esac
+		shift 2
+		continue
+		;;
+	--dir=*)
+		DIR="${1#*=}"
+		case "${DIR}" in
+		"")
+			exit 1
+			;;
+		-*)
+			exit 1
+			;;
+		esac
+		shift
+		continue
+		;;
+	'-f' | '--force')
+		FORCE_OVERWRITE='--force'
+		shift
+		continue
+		;;
+	'-h' | '--help')
+		help
+		exit
+		;;
+	--)
+		shift
+		break
+		;;
+	-*)
+		printf '%s\n' "Unknown option: ${1}" >&2
+		exit 1
+		;;
+	*)
+		break
+		;;
+	esac
+done
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-d",
-        "--template-dir",
-        dest="dir",
-        type=str,
-        help="choose a template directory (default: ~/Templates)",
-    )
-    parser.add_argument(
-        "-f",
-        "--force",
-        dest="force_overwrite",
-        action="store_true",
-        help="overwrite dest if it exists",
-    )
-    parser.add_argument("dest", type=str)
+# If directory wasn't overridden
+if [[ -z "$DIR" ]]; then
+	DIR="$DEFAULT_TEMPLATE_DIR"
+fi
 
-    args = parser.parse_args()
+# If no target specified
+if [[ -z "$1" ]]; then
+	printf '%s\n' 'Please specify target name'
+	exit 1
+fi
 
-    template_dir = DEFAULT_TEMPLATE_DIR if args.dir is None else Path(args.dir)
+# Check if default template directory exists
+if ! [[ -d "$DIR" ]]; then
+	printf '%s\n' "Template directory doesn't exist, exiting."
+	exit 2
+fi
 
-    # Check if default template directory is non-existent
-    if not template_dir.exists():
-        print(TEMPLATE_DIR_DOESNT_EXIST)
-        exit(E_TEMP_DIR_NON_EXIST)
+files="$(find_files "$DIR")"
+selected_file="$(run_fzf "$files")"
 
-    files = search.find_files(directory=template_dir)
-
-    try:
-        selected_file = fzf.select_file_with_fzf(files)
-    except KeyboardInterrupt:
-        exit(error.E_INTERRUPT)
-    except fzf.FZFError as f:
-        print(f)
-        exit(f.exit_code)
-
-    dest_file = Path(args.dest)
-
-    try:
-        dest_file.touch(mode=0o600, exist_ok=False)
-    except FileExistsError as e:
-        if args.force_overwrite:
-            dest_file.touch(mode=0o600, exist_ok=True)
-            dest_file.write_bytes(selected_file.read_bytes())
-        else:
-            print(e)
-            exit(error.E_FILE_EXISTS)
-    else:
-        dest_file.write_bytes(selected_file.read_bytes())
+# Check if target exists
+if [[ -f "$1" && -z "$FORCE_OVERWRITE" ]]; then
+	printf '%s\n' 'File already exists, exiting'
+	exit 1
+elif [[ -f "$1" && -n "$FORCE_OVERWRITE" ]]; then
+	cp --verbose --force -- "$selected_file" "$1"
+else
+	cp --verbose -- "$selected_file" "$1"
+fi

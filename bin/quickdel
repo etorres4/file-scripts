@@ -1,179 +1,218 @@
-#!/usr/bin/env python3
-"""
-quickdel - delete any file matching a query
+#!/usr/bin/env bash
 
-Dependencies
-============
-* fd
-* python-termcolor
+# Cleanup
+set -e
+trap 'exit 1' SIGINT
 
-Command-Line Arguments
-======================
-* -d, --directories-only
-* -D, --directory       TODO: implement this
-* -e, --empty-only
-* -E, --extension
-* -f, --files-only
-* -F, --force-directory-delete
-* -i, --no-ignore
-* -I, --no-ignore-vcs
-* -l, --links-only
-"""
+# ========== Source library ==========
+LIBDIR="/usr/share/file-scripts/"
 
-import argparse
-import os
-import os.path
-import re
-import shutil
-import file_scripts.error as error
-import file_scripts.search as search
-
-from termcolor import colored
+for f in "$LIBDIR"/*.sh; do
+    source "${f}"
+done
 
 # ========== Constants ==========
-fd_opts = ["--hidden"]
-# Matches 'y' or 'yes' only, ignoring case
-USER_RESPONSE_YES = r"^[Yy]{1}([Ee]{1}[Ss]{1})?$"
+RED=$'\e[1;31m'
+GREEN=$'\e[1;32m'
+BLUE=$'\e[1;34m'
+YELLOW=$'\e[1;33m'
+WHITE_BOLD=$'\e[1;37m'
+RESET=$'\e[0;0m'
 
+declare -a extra_fd_opts
+declare -a typeopts
 
-# ========== Functions ==========
-def color_file(filename):
-    """Return correct color code for filetype of filename.
+# ========== Helper functions ==========
+function help() {
+    cat << HELPMESSAGE
+$(basename "$0") $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION
 
-    Example
-    -------
-    >>> color_file('Test File', 'red')
-    '\x1b[31mTest String\x1b[0m'
+Usage: $(basename "$0") [-h] [-d] [-e] [-E ext] [-f] [-F] [-I] [-i] [-l] patterns [patterns ...]
 
-    :param filename: file to determine color output for
-    :type filename: str
-    :return: filename with ANSII escape codes for color
-    :rtype: str
-    """
-    if os.path.isdir(filename):
-        return colored(filename, "blue")
-    elif os.path.islink(filename):
-        return colored(filename, "green")
-    else:
-        return filename
+positional arguments:
+  patterns              file matching patterns
 
+options:
+  -h, --help            show this help message and exit
+  -d, --directories-only
+                        filter results to directories
+  -e, --empty-only      filter results to empty files and directories
+  -E ext, --extension ext
+                        file extension
+  -f, --files-only      filter results to files
+  -F, --force-directory-delete
+                        do not ignore non-empty directories, delete anyways
+  -I, --no-ignore-vcs   do not ignore .gitignore
+  -i, --no-ignore       do not ignore .gitignore and .fdignore
+  -l, --links-only      filter results to symlinks
+HELPMESSAGE
+}
 
-# ========== Main Script ==========
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-d",
-        "--directories-only",
-        action="store_const",
-        const=["--type", "directory"],
-        dest="fd_extra_opts",
-        help="filter results to directories",
-    )
-    parser.add_argument(
-        "-e",
-        "--empty-only",
-        action="store_const",
-        const=["--type", "empty"],
-        dest="fd_extra_opts",
-        help="filter results to empty files and directories",
-    )
-    parser.add_argument(
-        "-E",
-        "--extension",
-        action="append",
-        dest="extensions",
-        help="file extension",
-        metavar="ext",
-    )
-    parser.add_argument(
-        "-f",
-        "--files-only",
-        action="store_const",
-        const=["--type", "file"],
-        dest="fd_extra_opts",
-        help="filter results to files",
-    )
-    parser.add_argument(
-        "-F",
-        "--force-directory-delete",
-        action="store_true",
-        help="do not ignore non-empty directories, delete anyways",
-    )
-    parser.add_argument(
-        "-I",
-        "--no-ignore-vcs",
-        action="store_const",
-        const="--no-ignore-vcs",
-        dest="fd_extra_opts",
-        help="do not ignore .gitignore",
-    )
-    parser.add_argument(
-        "-i",
-        "--no-ignore",
-        action="store_const",
-        const="--no-ignore",
-        dest="fd_extra_opts",
-        help="do not ignore .gitignore and .fdignore",
-    )
-    parser.add_argument(
-        "-l",
-        "--links-only",
-        action="store_const",
-        const=["--type", "symlink"],
-        dest="fd_extra_opts",
-        help="filter results to symlinks",
-    )
-    parser.add_argument("patterns", nargs="+", help="file matching patterns")
+# $1 is the output string, $2 is the color
+function color_output() {
+    case "$2" in
+        'red')
+            printf "$RED%s\n" "$1"
+            ;;
+        'green')
+            printf "$GREEN%s\n" "$1"
+            ;;
+        'blue')
+            printf "$BLUE%s\n" "$1"
+            ;;
+        'yellow')
+            printf "$YELLOW%s\n" "$1"
+            ;;
+        'white')
+            printf "$WHITE_BOLD%s\n" "$1"
+            ;;
+        'reset')
+            printf "$RESET%s\n" "$1"
+            ;;
+    esac
+}
 
-    args = parser.parse_args()
+# Color files blue and directories green
+function color_path() {
+    if [[ -f "$1" ]]; then
+        color_output "$1" 'blue'
+    elif [[ -d "$1" ]]; then
+        color_output "$1" 'green'
+    fi
+}
 
-    if args.fd_extra_opts is not None:
-        fd_opts.extend(args.fd_extra_opts)
-    if args.extensions is not None:
-        for ext in args.extensions:
-            fd_opts.extend(["--extension", ext])
+# Delete path using correct command
+# Parameters:
+#   - $1: path
+#   - $2: force delete boolean flag
+function delete() {
+    exit 1
+}
 
-    files = set()
-    for p in args.patterns:
-        files.update(
-            search.find_files(opts=fd_opts, capture_text=True, pattern=p).splitlines()
-        )
-    files = sorted(files)
+while true; do
+    case "${1}" in
+        '-d' | '--directories-only')
+            typeopts+=(--type directory)
+            shift
+            continue
+            ;;
+        '-e' | '--empty-only')
+            typeopts+=(--type empty)
+            shift
+            continue
+            ;;
+        '-E' | '--extension')
+            EXT="${2}"
+            case "${EXT}" in
+                "")
+                    exit 1
+                    ;;
+                -*)
+                    exit 1
+                    ;;
+            esac
+            extra_fd_opts+=('--extension' "$EXT")
+            shift 2
+            continue
+            ;;
+        --extension=*)
+            EXT="${1#*=}"
+            case "${EXT}" in
+                "")
+                    exit 1
+                    ;;
+                -*)
+                    exit 1
+                    ;;
+            esac
+            extra_fd_opts+=('--extension' "$EXT")
+            shift
+            continue
+            ;;
+        '-f' | '--files-only')
+            typeopts+=(--type file)
+            shift
+            continue
+            ;;
+        '-F' | '--force-directory-delete')
+            rm_force='--force'
+            shift
+            continue
+            ;;
+        '-i' | '--no-ignore-vcs')
+            extra_fd_opts+=('--no-ignore-vcs')
+            shift
+            continue
+            ;;
+        '-I' | '--no-ignore')
+            extra_fd_opts+=('--no-ignore')
+            shift
+            continue
+            ;;
+        '-l' | '--links-only')
+            typeopts+=(--type symlink)
+            shift
+            continue
+            ;;
+        '-h' | '--help')
+            help
+            exit
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            printf '%s\n' "Unknown option: ${1}" >&2
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
-    if files == []:
-        print("No results found, exiting")
-        exit(error.E_NO_RESULTS)
+# Interpret options
+if [[ -z "$*" ]]; then
+    help
+fi
 
-    # Pretty print all filenames
-    for index, filename in enumerate([color_file(f) for f in files], 1):
-        print(f"{index}. {filename}")
-    # Padding line
-    print()
+declare -a files pattern_results
 
-    try:
-        user_response = input("Would you like to delete these files? [y/N]: ")
-    except KeyboardInterrupt:
-        exit(error.E_INTERRUPT)
+for pattern in "$@"; do
+    readarray -d $'\n' -t pattern_results <<< "$(fd "${DEFAULT_FD_OPTS[@]}" "${extra_fd_opts[@]}" "${typeopts[@]}" "$pattern")"
+    files+=("${pattern_results[@]}")
+done
 
-    if re.match(USER_RESPONSE_YES, user_response) is None:
-        print("Operation cancelled")
-        exit(error.E_USER_RESPONSE_NO)
+# If nothing was found
+if [[ -z "${files[*]}" ]]; then
+    color_output 'No files found, exiting' 'yellow'
+    exit 1
+fi
 
-    # Remove files first
-    for f in [fi for fi in files if os.path.isfile(fi)]:
-        os.remove(f)
+# Sort list of paths before printing
+readarray -t paths < <(printf '%s\n' "${files[@]}" | sort --unique)
 
-    # Check -f, --force-directory-delete option
-    # shutil.rmtree forcibly removes directories
-    # os.rmdir removes directories only if they are empty
-    rmdir_func = shutil.rmtree if args.force_directory_delete else os.rmdir
+# Print list of files found matching criteria
+i=1
+for p in "${paths[@]}"; do
+    printf '%s. %s\n' "$(color_output $i 'white')" "$(color_path "$p")"
+    i=$((i + 1))
+done
 
-    for d in filter(os.path.isdir, files):
-        try:
-            rmdir_func(d)
-        except OSError:
-            print(
-                f"{colored('Warning', 'yellow')}: {colored(d, 'blue')} is not empty, not deleting directory"
-            )
+# Padding between files and prompt
+#color_output '' reset
 
-    print(colored("\nDeletions complete", "green"))
+read -r -n 1 -p 'Would you like to delete these files? [y/N]: ' user_response
+# Padding between prompt and output
+echo ''
+
+if [[ "$user_response" =~ (y|Y) ]]; then
+    for p in "${paths[@]}"; do
+        if [[ -d "$p" ]]; then
+            rm --recursive "$rm_force" --verbose -- "$p" || printf '%s %s\n' "$(color_output "Unable to remove path:" 'red')" "$(color_path "$p")"
+        else
+            rm "$rm_force" --verbose -- "$p" || printf '%s %s\n' "$(color_output "Unable to remove path:" 'red')" "$(color_path "$p")"
+        fi
+    done
+fi
