@@ -17,25 +17,16 @@
 
 
 Name:           file-scripts
-Version:        1.2.0
+Version:        2.0.0
 Release:        0
 Summary:        Set of scripts for manipulating files
 License:        GPL-3.0-only
 Group:          Productivity/File utilities
 URL:            https://github.com/etorres4/file-scripts
 Source:         %{name}-%{version}.tar.gz
-BuildRequires:  python3 >= 3.7
-BuildRequires:  python3-hypothesis
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-Sphinx
-BuildRequires:  python3-pytest
-BuildRequires:  fdupes
-Requires:       python3 >= 3.7
+Requires:       /usr/bin/bash
 Requires:       fd
 Requires:       fzf
-Requires:       mlocate
-Requires:       python3-termcolor
-Supplements:    zsh
 BuildArch:      noarch
 
 %description
@@ -52,11 +43,10 @@ Plugins and completions for helper scripts.
 %prep
 %setup -q
 
-%build
-%{python3_build}
-
 %install
-%{python3_install}
+for script in bin/*; do
+    install -Dm755 "$script" "%{buildroot}/usr/bin/$(basename script)"
+done
 
 # Install zsh completion functions
 ZSHCOMPLETIONDIR="%{buildroot}%{_datadir}/zsh/site-functions"
@@ -66,15 +56,8 @@ for completion in zsh/*; do
     install -Dm644 "${completion}" "${ZSHCOMPLETIONDIR}/${completion##*.}"
 done
 
-%fdupes %{buildroot}/%{_prefix}
-
-%check
-pytest
-
-#%%files %%{python_files} (bug)
 %files
 %attr(0755,-,-) %{_bindir}/*
-/usr/lib/python3*/*
 
 %files zsh-plugins
 %{_datadir}/zsh/
