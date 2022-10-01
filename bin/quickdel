@@ -14,6 +14,7 @@ WHITE_BOLD=$'\e[1;37m'
 RESET=$'\e[0;0m'
 
 fd_opts=(--hidden --threads "$(nproc)")
+rm_opts=(--verbose)
 declare -a typeopts
 
 # Helper functions
@@ -105,7 +106,7 @@ while true; do
                     exit 1
                     ;;
             esac
-            fd_opts+=('--extension' "$EXT")
+            fd_opts+=(--extension "$EXT")
             shift 2
             continue
             ;;
@@ -119,7 +120,7 @@ while true; do
                     exit 1
                     ;;
             esac
-            fd_opts+=('--extension' "$EXT")
+            fd_opts+=(--extension "$EXT")
             shift
             continue
             ;;
@@ -129,7 +130,7 @@ while true; do
             continue
             ;;
         '-F' | '--force-directory-delete')
-            rm_force='--force'
+            rm_opts+=(--recursive --force)
             shift
             continue
             ;;
@@ -167,8 +168,10 @@ while true; do
 done
 
 # Interpret options
+# If nothing was entered
 if [[ -z "$*" ]]; then
     help
+    exit 1
 fi
 
 declare -a files pattern_results
@@ -195,7 +198,7 @@ for p in "${paths[@]}"; do
 done
 
 # Padding between files and prompt
-#color_output '' reset
+color_output '' reset
 
 read -r -n 1 -p 'Would you like to delete these files? [y/N]: ' user_response
 # Padding between prompt and output
@@ -203,10 +206,6 @@ echo ''
 
 if [[ "$user_response" =~ (y|Y) ]]; then
     for p in "${paths[@]}"; do
-        if [[ -d "$p" ]]; then
-            rm --recursive "$rm_force" --verbose -- "$p" || printf '%s %s\n' "$(color_output "Unable to remove path:" 'red')" "$(color_path "$p")"
-        else
-            rm "$rm_force" --verbose -- "$p" || printf '%s %s\n' "$(color_output "Unable to remove path:" 'red')" "$(color_path "$p")"
-        fi
+        rm "${rm_opts[@]}" -- "$p" || printf '%s %s\n' "$(color_output "Unable to remove path:" 'red')" "$(color_path "$p")"
     done
 fi

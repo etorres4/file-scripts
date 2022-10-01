@@ -11,7 +11,7 @@ fd_opts=(--type f --threads "$(nproc)")
 
 # Helper functions
 function help() {
-	cat <<HELPMESSAGE
+    cat << HELPMESSAGE
 $(basename "$0") $VERSION
 
 Usage: $(basename "$0") [-h] [-d DIR] [-f] dest
@@ -28,77 +28,77 @@ HELPMESSAGE
 }
 
 while true; do
-	case "${1}" in
-	'-d' | '--dir')
-		template_dir="${2}"
-		case "${DIR}" in
-		"")
-			exit 1
-			;;
-		-*)
-			exit 1
-			;;
-		esac
-		shift 2
-		continue
-		;;
-	--dir=*)
-		template_dir="${1#*=}"
-		case "${DIR}" in
-		"")
-			exit 1
-			;;
-		-*)
-			exit 1
-			;;
-		esac
-		shift
-		continue
-		;;
-	'-f' | '--force')
-		FORCE_OVERWRITE='--force'
-		shift
-		continue
-		;;
-	'-h' | '--help')
-		help
-		exit
-		;;
-	--)
-		shift
-		break
-		;;
-	-*)
-		printf '%s\n' "Unknown option: ${1}" >&2
-		exit 1
-		;;
-	*)
-		break
-		;;
-	esac
+    case "${1}" in
+        '-d' | '--dir')
+            template_dir="${2}"
+            case "${template_dir}" in
+                "")
+                    exit 1
+                    ;;
+                -*)
+                    exit 1
+                    ;;
+            esac
+            shift 2
+            continue
+            ;;
+        --dir=*)
+            template_dir="${1#*=}"
+            case "${template_dir}" in
+                "")
+                    exit 1
+                    ;;
+                -*)
+                    exit 1
+                    ;;
+            esac
+            shift
+            continue
+            ;;
+        '-f' | '--force')
+            FORCE_OVERWRITE='--force'
+            shift
+            continue
+            ;;
+        '-h' | '--help')
+            help
+            exit
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            printf '%s\n' "Unknown option: ${1}" >&2
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
 done
 
 # If no target specified
 if [[ -z "$1" ]]; then
-	printf '%s\n' 'Please specify target name'
-	exit 1
+    help
+    exit 1
 fi
 
 # Check if template directory exists
 if ! [[ -d "$template_dir" ]]; then
-	printf '%s\n' "Template directory doesn't exist, exiting."
-	exit 2
+    printf '%s\n' "Template directory doesn't exist, exiting."
+    exit 2
 fi
 
-files="$("${fd_opts[@]}" "$DIR")"
+files="$(fd "${fd_opts[@]}" -- . "$template_dir")"
 selected_file="$(fzf --select-1 --exit-0 <<< "$files")"
 
 # Check if target exists
 if [[ -f "$1" && -z "$FORCE_OVERWRITE" ]]; then
-	printf '%s\n' 'File already exists, exiting'
-	exit 1
+    printf '%s\n' 'File already exists, exiting'
+    exit 1
 elif [[ -f "$1" && -n "$FORCE_OVERWRITE" ]]; then
-	cp --verbose --force -- "$selected_file" "$1"
+    cp --verbose --force -- "$selected_file" "$1"
 else
-	cp --verbose -- "$selected_file" "$1"
+    cp --verbose -- "$selected_file" "$1"
 fi
