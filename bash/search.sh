@@ -6,13 +6,13 @@ DEFAULT_FD_OPTS=('--hidden' '--type' 'symlink' '--threads' "$(nproc)")
 # $1: directory
 # $2-n: extra arguments
 find_files() {
-	if [[ -d "$1" ]]; then
-		local directory="$1"
-		shift
-		fd "${DEFAULT_FD_OPTS[@]}" --type f "$@" -- . "$directory"
-	else
-		fd "${DEFAULT_FD_OPTS[@]}" --type f "$@"
-	fi
+    if [[ -d "$1" ]]; then
+        local directory="$1"
+        shift
+        fd "${DEFAULT_FD_OPTS[@]}" --type f "$@" -- . "$directory"
+    else
+        fd "${DEFAULT_FD_OPTS[@]}" --type f "$@"
+    fi
 }
 
 # Search and return a string with filenames delimited by \n
@@ -20,13 +20,13 @@ find_files() {
 # $1: directory
 # $2-n: extra arguments
 find_directories() {
-	if [[ -d "$1" ]]; then
-		local directory="$1"
-		shift
-		fd "${DEFAULT_FD_OPTS[@]}" --type d "$@" -- . "$directory"
-	else
-		fd "${DEFAULT_FD_OPTS[@]}" --type d "$@"
-	fi
+    if [[ -d "$1" ]]; then
+        local directory="$1"
+        shift
+        fd "${DEFAULT_FD_OPTS[@]}" --type d "$@" -- . "$directory"
+    else
+        fd "${DEFAULT_FD_OPTS[@]}" --type d "$@"
+    fi
 }
 
 # Search all files and directories, determine what type of files to search
@@ -37,11 +37,11 @@ find_directories() {
 find_specific() {
     local type_opt="$1"
     shift
-	if [[ -d "$1" ]]; then
-		local directory="$1"
-		shift
-		fd "${DEFAULT_FD_OPTS[@]}" --type "$type_opt" "$@" -- . "$directory"
-	else
-		fd "${DEFAULT_FD_OPTS[@]}" --type "$type_opt" "$@"
-	fi
+    if [[ -d "$1" ]]; then
+        local directory="$1"
+        shift
+        fd "${DEFAULT_FD_OPTS[@]}" --type "$type_opt" "$@" -- . "$directory"
+    else
+        fd "${DEFAULT_FD_OPTS[@]}" --type "$type_opt" "$@"
+    fi
 }
