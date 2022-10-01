@@ -6,7 +6,8 @@ trap 'exit 1' SIGINT
 
 # Constants
 VERSION=2.0.0
-DEFAULT_TEMPLATE_DIR="$HOME/Templates"
+template_dir="$HOME/Templates"
+fd_opts=(--type f --threads "$(nproc)")
 
 # Helper functions
 function help() {
@@ -29,7 +30,7 @@ HELPMESSAGE
 while true; do
 	case "${1}" in
 	'-d' | '--dir')
-		DIR="${2}"
+		template_dir="${2}"
 		case "${DIR}" in
 		"")
 			exit 1
@@ -42,7 +43,7 @@ while true; do
 		continue
 		;;
 	--dir=*)
-		DIR="${1#*=}"
+		template_dir="${1#*=}"
 		case "${DIR}" in
 		"")
 			exit 1
@@ -77,19 +78,14 @@ while true; do
 	esac
 done
 
-# If directory wasn't overridden
-if [[ -z "$DIR" ]]; then
-	DIR="$DEFAULT_TEMPLATE_DIR"
-fi
-
 # If no target specified
 if [[ -z "$1" ]]; then
 	printf '%s\n' 'Please specify target name'
 	exit 1
 fi
 
-# Check if default template directory exists
-if ! [[ -d "$DIR" ]]; then
+# Check if template directory exists
+if ! [[ -d "$template_dir" ]]; then
 	printf '%s\n' "Template directory doesn't exist, exiting."
 	exit 2
 fi
