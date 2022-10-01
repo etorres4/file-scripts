@@ -13,10 +13,10 @@ YELLOW=$'\e[1;33m'
 WHITE_BOLD=$'\e[1;37m'
 RESET=$'\e[0;0m'
 
-declare -a extra_fd_opts
+fd_opts=(--hidden --threads "$(nproc)")
 declare -a typeopts
 
-# ========== Helper functions ==========
+# Helper functions
 function help() {
     cat << HELPMESSAGE
 $(basename "$0") $VERSION
