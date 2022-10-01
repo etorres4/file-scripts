@@ -11,12 +11,14 @@ for f in "$LIBDIR"/*.sh; do
 	source "${f}"
 done
 
+# Constants
+VERSION=2.0.0
 DEFAULT_TEMPLATE_DIR="$HOME/Templates"
 
 # Helper functions
 function help() {
 	cat <<HELPMESSAGE
-$(basename "$0") $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION
+$(basename "$0") $VERSION
 
 Usage: $(basename "$0") [-h] [-d DIR] [-f] dest
 

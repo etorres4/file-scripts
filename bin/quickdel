@@ -12,6 +12,7 @@ for f in "$LIBDIR"/*.sh; do
 done
 
 # ========== Constants ==========
+VERSION='2.0.0'
 RED=$'\e[1;31m'
 GREEN=$'\e[1;32m'
 BLUE=$'\e[1;34m'
@@ -25,7 +26,7 @@ declare -a typeopts
 # ========== Helper functions ==========
 function help() {
     cat << HELPMESSAGE
-$(basename "$0") $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION
+$(basename "$0") $VERSION
 
 Usage: $(basename "$0") [-h] [-d] [-e] [-E ext] [-f] [-F] [-I] [-i] [-l] patterns [patterns ...]
 

@@ -13,11 +13,6 @@ source=("${pkgname}::git+file:///home/etorres/Projects/file-scripts")
 install=$pkgname.install
 sha256sums=('SKIP')
 
-pkgver() {
-    cd "${srcdir}/${pkgname}/bash"
-    bash version.sh --print
-}
-
 package() {
     cd "${srcdir}/${pkgname}"
 
