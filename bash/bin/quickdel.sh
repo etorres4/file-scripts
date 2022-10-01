@@ -186,7 +186,7 @@ for pattern in "$@"; do
 done
 
 # If nothing was found
-if [[ -z "${paths[*]}" ]]; then
+if [[ -z "${files[*]}" ]]; then
     color_output 'No files found, exiting' 'yellow'
     exit 1
 fi
