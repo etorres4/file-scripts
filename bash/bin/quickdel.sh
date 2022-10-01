@@ -20,7 +20,7 @@ WHITE_BOLD=$'\e[1;37m'
 RESET=$'\e[0;0m'
 
 declare -a extra_fd_opts
-declare typeopt='file'
+declare -a typeopts
 
 # ========== Helper functions ==========
 function help() {
@@ -92,12 +92,12 @@ function delete() {
 while true; do
     case "${1}" in
         '-d' | '--directories-only')
-            typeopt='directory'
+            typeopts+=(--type directory)
             shift
             continue
             ;;
         '-e' | '--empty-only')
-            typeopt='empty'
+            typeopts+=(--type empty)
             shift
             continue
             ;;
@@ -130,7 +130,7 @@ while true; do
             continue
             ;;
         '-f' | '--files-only')
-            typeopt='file'
+            typeopts+=(--type file)
             shift
             continue
             ;;
@@ -150,7 +150,7 @@ while true; do
             continue
             ;;
         '-l' | '--links-only')
-            typeopt='symlink'
+            typeopts+=(--type symlink)
             shift
             continue
             ;;
@@ -174,14 +174,13 @@ done
 
 # Interpret options
 if [[ -z "$*" ]]; then
-    echo 'Please enter patterns of filenames to delete'
-    exit 1
+    help
 fi
 
 declare -a files pattern_results
 
 for pattern in "$@"; do
-    readarray -d $'\n' -t pattern_results <<< "$(find_specific "$typeopt" "$pattern" "${extra_fd_opts[@]}")"
+    readarray -d $'\n' -t pattern_results <<< "$(fd "${DEFAULT_FD_OPTS[@]}" "${extra_fd_opts[@]}" "${typeopts[@]}" "$pattern")"
     files+=("${pattern_results[@]}")
 done
 
