@@ -1,4 +1,4 @@
-# Maintainer: Eric Torres <erictorres4@protonmail.com>
+# Maintainer: Eric Torres <eric.torres@its-et.me>
 pkgname=file-scripts
 pkgver=2.0.0
 pkgrel=1

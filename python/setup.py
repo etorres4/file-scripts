@@ -17,7 +17,7 @@ setuptools.setup(
     name="file_scripts",
     version="2.0.0",
     author="Eric Torres",
-    author_email="erictorres4@protonmail.com",
+    author_email="eric.torres@its-et.me",
     description="File-related helper scripts",
     long_description=long_description,
     long_description_content_type="text/markdown",
