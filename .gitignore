@@ -2,5 +2,8 @@
 .hypothesis
 build
 dist
+file-scripts
 pkg
+src
 **/*.egg-info
+*.zst
