@@ -12,8 +12,6 @@ install=$pkgname.install
 sha256sums=('SKIP')
 
 package() {
-    cd "${srcdir}/${pkgname}"
-
     for script in bin/*; do
         install -Dm755 "$script" "$pkgdir/usr/bin/$(basename "$script")"
     done
