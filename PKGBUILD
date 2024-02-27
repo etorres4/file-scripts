@@ -1,13 +1,13 @@
 # Maintainer: Eric Torres <eric.torres@its-et.me>
 pkgname=file-scripts
 pkgver=2.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Various scripts for performing file-related operations such as editing and deleting."
 arch=(any)
 license=(GPL3)
 depends=(bash fd fzf)
 makedepends=(git)
-source=("${pkgname}::git+file:///home/etorres/Projects/file-scripts")
+source=("${pkgname}-${pkgver}.tar.gz")
 install=$pkgname.install
 sha256sums=('SKIP')
 
