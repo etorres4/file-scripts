@@ -6,4 +6,6 @@ file-scripts
 pkg
 src
 **/*.egg-info
+*.gz
 *.zst
+*.log
