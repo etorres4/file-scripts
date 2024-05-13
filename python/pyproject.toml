@@ -1,0 +1,21 @@
+[build-system]
+requires=["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "file-scripts"
+authors = [{name="Eric Torres", email="eric.torres@its-et.me"}]
+version = "2.0.0"
+description = "File-related helper-scripts"
+readme = "README"
+license = {file = "LICENSE"}
+dependencies = ["termcolor"]
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU GPLv3 License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/etorres4/file-scripts"
+Repository = "https://github.com/etorres4/file-scripts"
