@@ -7,14 +7,16 @@ underlying programs can be accounted for in only their respective
 modules.
 
 # Requirements
--   fd
--   fzf
--   mlocate
--   python \>= 3.7
--   python-termcolor
+
+- fd
+- fzf
+- mlocate
+- python \>= 3.7
+- python-termcolor
 
 # Build Requirements
--   python \>= 3.7
--   pytest
--   python-hypothesis
--   python-sphinx
+
+- python \>= 3.7
+- pytest
+- python-hypothesis
+- python-sphinx
